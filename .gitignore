@@ -1,0 +1,15 @@
+# Secrets — never commit your API key or Streamlit secrets
+.env
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Logs & OS / editor
+*.log
+.DS_Store
+.idea/
+.vscode/
