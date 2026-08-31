@@ -1,14 +1,9 @@
 """
-scraper/linkedin.py — Selenium scraper for LinkedIn job search (guest mode).
+scraper/linkedin.py — Scraper for LinkedIn job search (guest mode).
 
-Follows the same architecture as scraper/naukri.py on purpose:
-the same headless driver, explicit waits, retries, deduplication and
-return structure, so the whole project stays consistent.
-
-It uses LinkedIn's public "jobs-guest" search endpoint (the same HTML
-the site shows to logged-out visitors), which returns job cards that are
-easy to parse with BeautifulSoup. Pagination is handled with the `start`
-offset (0, 25, 50, ...) — 25 results per page.
+Follows the same architecture as scraper/naukri.py but uses `requests`
+instead of Selenium, because LinkedIn's guest search returns plain HTML
+fragments that are easy to parse without a headless browser.
 
 Returns a list of dictionaries, one per job:
 
@@ -21,14 +16,8 @@ Returns a list of dictionaries, one per job:
 import re
 import time
 import urllib.parse
-
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-from scraper.naukri import get_chrome_driver  # reuse the same driver setup
 
 # How many job detail pages to fetch descriptions for (keeps the run fast).
 MAX_DETAIL_FETCHES = 25
@@ -43,32 +32,6 @@ _HEADERS = {
                    "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"),
     "Accept-Language": "en-US,en;q=0.9",
 }
-
-
-def _load_page(driver, url, attempts=3, wait_timeout=15):
-    """
-    Loads a URL with retries. Returns True when job cards appear on the page.
-
-    Also detects login walls / CAPTCHAs and reports them instead of
-    pretending the page loaded.
-    """
-    for attempt in range(1, attempts + 1):
-        try:
-            driver.get(url)
-            WebDriverWait(driver, wait_timeout).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "li.job-card-container, div.base-card"))
-            )
-            # A login wall means we cannot read results — treat as failure.
-            page_text = driver.page_source.lower()
-            if "authwall" in driver.current_url.lower() or "captcha" in page_text:
-                print("[linkedin] login wall or CAPTCHA detected; results may be empty")
-                return False
-            return True
-        except Exception as exc:
-            print(f"[linkedin] attempt {attempt}/{attempts} failed for {url}: {exc}")
-            if attempt < attempts:
-                time.sleep(2 * attempt)  # small backoff between retries
-    return False
 
 
 def _job_id_from_url(url):
@@ -93,6 +56,8 @@ def _fetch_description(job_id, session):
 
 def _experience_from_text(text):
     """Finds an experience requirement such as '3-6 Yrs' or '2+ years' in text."""
+    if not text:
+        return None
     match = re.search(r"(\d+)\s*[-–to]+\s*(\d+)\s*(?:years?|yrs)", text, re.IGNORECASE)
     if match:
         return f"{match.group(1)}-{match.group(2)} Yrs"
@@ -107,7 +72,6 @@ def scrape_linkedin(keyword="software developer", location="india", max_pages=1,
     Scrapes jobs from LinkedIn (guest search) based on keyword and location.
     Returns a list of dictionaries containing job details.
     """
-    driver = get_chrome_driver()
     job_results = []
     seen_urls = set()
     session = requests.Session()
@@ -122,13 +86,13 @@ def scrape_linkedin(keyword="software developer", location="india", max_pages=1,
             url = SEARCH_URL.format(keywords=keywords, location=loc, start=start)
             print(f"Scraping URL: {url}")
 
-            # Wait for the job cards to load (Explicit Wait) with retries
-            if not _load_page(driver, url):
-                print(f"[linkedin] giving up on page {page}: {url}")
-                break  # further pages are unlikely to load either
+            response = session.get(url, timeout=15)
+            if response.status_code != 200:
+                print(f"[linkedin] giving up on page {page}: Status code {response.status_code}")
+                break
 
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-            cards = soup.select("li.job-card-container") or soup.select("div.base-card")
+            soup = BeautifulSoup(response.text, "html.parser")
+            cards = soup.select("li.job-card-container") or soup.select("div.base-card") or soup.select("li")
 
             page_new = 0
             for card in cards:
@@ -157,7 +121,7 @@ def scrape_linkedin(keyword="software developer", location="india", max_pages=1,
                 }
 
                 # Company
-                comp_elem = card.select_one(".base-search-card__subtitle a")
+                comp_elem = card.select_one(".base-search-card__subtitle a") or card.select_one(".base-search-card__subtitle")
                 if comp_elem:
                     job_data["company"] = comp_elem.get_text(" ", strip=True)
 
@@ -201,9 +165,7 @@ def scrape_linkedin(keyword="software developer", location="india", max_pages=1,
 
     except Exception as e:
         print(f"An error occurred during scraping: {e}")
-    finally:
-        driver.quit()
-
+    
     return job_results[:max_jobs] if max_jobs else job_results
 
 

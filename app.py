@@ -24,7 +24,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
-import fitz  # PyMuPDF
+import pymupdf
 import streamlit as st
 
 import matcher
@@ -230,7 +230,7 @@ def extract_resume_text(pdf_bytes: bytes) -> str:
     if not pdf_bytes:
         raise ValueError("The uploaded file is empty.")
     try:
-        document = fitz.open(stream=pdf_bytes, filetype="pdf")
+        document = pymupdf.open(stream=pdf_bytes, filetype="pdf")
     except Exception as exc:  # not a valid PDF
         raise ValueError("Could not read the file. Please upload a valid PDF resume.") from exc
 
