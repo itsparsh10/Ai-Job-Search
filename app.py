@@ -94,7 +94,7 @@ p,[data-testid="stMarkdownContainer"]{color:var(--text)}.stCaption{color:var(--m
 .st-key-job-card-1:hover,.st-key-job-card-2:hover,.st-key-job-card-3:hover,.st-key-job-card-4:hover,.st-key-job-card-5:hover,.st-key-job-card-6:hover,.st-key-job-card-7:hover,.st-key-job-card-8:hover,.st-key-job-card-9:hover,.st-key-job-card-10:hover,.st-key-job-card-11:hover,.st-key-job-card-12:hover,.st-key-job-card-13:hover,.st-key-job-card-14:hover,.st-key-job-card-15:hover,.st-key-job-card-16:hover,.st-key-job-card-17:hover,.st-key-job-card-18:hover,.st-key-job-card-19:hover,.st-key-job-card-20:hover{border-color:#d4d0ff!important;box-shadow:0 10px 30px rgba(16,24,40,.08)!important;transform:translateY(-1px)}
 .job-card-inner{padding:18px 19px 16px}.job-grid{display:grid;grid-template-columns:70px minmax(0,1fr) 80px;gap:14px;align-items:center}.rank{width:70px;height:70px;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#f7f6ff,#eeecff);border:1px solid #e4e1ff}.rank-num{color:#5148e5;font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.rank-value{color:#3730a3;font-family:'Plus Jakarta Sans',sans-serif;font-size:1.28rem;font-weight:800;line-height:1.05;margin-top:2px}.job-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:.98rem;font-weight:800;line-height:1.28;color:var(--text);margin:0}.job-company{color:#475467;font-size:.76rem;font-weight:700;margin-top:4px}.job-meta-row{display:flex;flex-wrap:wrap;gap:6px 9px;margin-top:8px;color:#667085;font-size:.68rem}.meta-item{display:inline-flex;align-items:center;gap:4px}.badge{display:inline-flex;padding:4px 7px;border-radius:6px;font-size:.58rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;vertical-align:middle;margin-left:5px}.badge-li{background:#eef7ff;color:#1769aa;border:1px solid #cce7ff}.badge-nk{background:#fff5eb;color:#b54708;border:1px solid #ffe0c2}.mode-badge{display:inline-flex;padding:4px 7px;border-radius:6px;background:#f2f4f7;color:#475467;font-size:.59rem;font-weight:800}.score-box{text-align:right;min-width:80px}.score-ring{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-left:auto;position:relative;background:conic-gradient(var(--score-color) var(--score),#edf0f5 0)}.score-ring:before{content:"";position:absolute;inset:7px;background:#fff;border-radius:50%}.score-number{position:relative;z-index:1;font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;font-weight:800;color:var(--text)}.score-label{font-size:.59rem;font-weight:800;margin-top:5px}.card-divider{height:1px;background:#eef0f4;margin:14px 0 12px}.match-section{margin-bottom:9px}.match-label{font-size:.61rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#98a2b3;margin-bottom:6px}.chip-row{display:flex;flex-wrap:wrap;gap:5px}.chip-match{display:inline-flex;padding:5px 8px;border-radius:7px;background:var(--success-soft);color:#087443;border:1px solid #cdeedc;font-size:.64rem;font-weight:700}.chip-miss{display:inline-flex;padding:5px 8px;border-radius:7px;background:var(--danger-soft);color:#b42318;border:1px solid #ffd2ce;font-size:.64rem;font-weight:700}.description-box{color:#667085;font-size:.74rem;line-height:1.65;background:#f8fafc;border:1px solid #edf0f4;border-radius:10px;padding:10px 11px;margin-top:8px}
 [data-testid="stExpander"]{border:1px solid #edf0f4!important;border-radius:10px!important;background:#fafbfc!important;box-shadow:none!important}[data-testid="stExpander"] summary{color:#475467!important;font-size:.7rem!important;font-weight:750!important}.apply-row{margin-top:12px}[data-testid="stLinkButton"] a{min-height:42px!important;border-radius:10px!important;border:1px solid #d9d6ff!important;background:#f7f6ff!important;color:#5148e5!important;font-weight:800!important;transition:.18s ease!important}[data-testid="stLinkButton"] a:hover{background:#eeecff!important;border-color:#c9c4ff!important}
-.loader-text{color:#475467;font-size:.77rem;font-weight:700}[data-testid="stProgress"]{height:8px!important;margin:10px 0 5px!important}[data-testid="stProgress"]>div{background:#ececf8!important;border-radius:999px!important}[data-testid="stProgress"]>div>div{background:linear-gradient(90deg,#635bff,#8b5cf6)!important;border-radius:999px!important}[data-testid="stAlert"]{border-radius:12px!important;border:1px solid var(--line)!important}.footer{text-align:center;color:#98a2b3;font-size:.67rem;padding:27px 0 3px}
+.loader-text{color:#475467;font-size:.77rem;font-weight:700}[data-testid="stAlert"]{border-radius:12px!important;border:1px solid var(--line)!important}.footer{text-align:center;color:#98a2b3;font-size:.67rem;padding:27px 0 3px}
 @media (max-width:900px){.block-container{padding:18px 14px 30px!important}.st-key-control-panel{position:relative!important;top:auto!important}.hero{padding:23px 21px}.job-grid{grid-template-columns:58px minmax(0,1fr)}.score-box{grid-column:2;text-align:left}.score-ring{margin-left:0}.rank{width:58px;height:58px}.rank-value{font-size:1.08rem}}
 </style>"""
 
@@ -1266,7 +1266,8 @@ def run_pipeline(settings: dict) -> tuple:
         progress.progress(0.06)
 
         def on_progress(done, total, message):
-            status.markdown(f'<span class="loader-text">{_esc(message)}</span>', unsafe_allow_html=True)
+            pct = int((0.06 + 0.5 * done / max(total, 1)) * 100)
+            status.markdown(f'<span class="loader-text">{_esc(message)} <strong>({pct}%)</strong></span>', unsafe_allow_html=True)
             progress.progress(0.06 + 0.5 * done / max(total, 1))
 
         jobs_per_query = 15 * settings["max_pages"]  # scale with the pages slider
@@ -1284,16 +1285,16 @@ def run_pipeline(settings: dict) -> tuple:
             )
             return None, None
 
-        status.markdown('<span class="loader-text">Loading AI model (first run downloads it)…</span>',
+        status.markdown('<span class="loader-text">Loading AI model (first run downloads it)… <strong>(60%)</strong></span>',
                         unsafe_allow_html=True)
         progress.progress(0.6)
         matcher.load_model()
 
-        status.markdown('<span class="loader-text">Extracting job requirements…</span>', unsafe_allow_html=True)
+        status.markdown('<span class="loader-text">Extracting job requirements… <strong>(70%)</strong></span>', unsafe_allow_html=True)
         progress.progress(0.7)
         enrich_jobs(jobs, profile.get("skills", []))
 
-        status.markdown('<span class="loader-text">Scoring and ranking matches…</span>', unsafe_allow_html=True)
+        status.markdown('<span class="loader-text">Scoring and ranking matches… <strong>(80%)</strong></span>', unsafe_allow_html=True)
         progress.progress(0.8)
         
         # UI filter takes absolute strict priority over the resume
@@ -1309,7 +1310,7 @@ def run_pipeline(settings: dict) -> tuple:
         )
 
         progress.progress(1.0)
-        status.markdown('<span class="loader-text">Done!</span>', unsafe_allow_html=True)
+        status.markdown('<span class="loader-text">Done! <strong>(100%)</strong></span>', unsafe_allow_html=True)
         time.sleep(0.35)
         progress.empty()
         status.empty()

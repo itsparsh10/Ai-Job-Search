@@ -68,7 +68,7 @@ JOB_CARD_SELECTORS = [
 ]
 
 
-def _load_page(driver, url, attempts=3, wait_timeout=15):
+def _load_page(driver, url, attempts=1, wait_timeout=8):
     """
     Loads a URL with retries. Returns True when a job list appears.
 
